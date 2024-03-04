@@ -1,18 +1,21 @@
 <script setup>
-import { OrbitControls } from '@tresjs/cientos'
+import { OrbitControls, } from '@tresjs/cientos'
 
 import { TresCanvas } from '@tresjs/core'
+// import { ref } from 'vue'
 
-const boxRef = ref(null);
+const boxRef = shallowRef(null);
 
 const { onLoop } = useRenderLoop();
 
 onLoop(({ delta, elapsed }) => {
   if (boxRef.value) {
     boxRef.value.rotation.y += delta
-    boxRef.value.rotation.z = elapsed * 0.2
+    boxRef.value.rotation.z = elapsed * 0.1
   }
 })
+
+const directionalLightRef = ref(null);
 </script>
 
 <template>
@@ -23,17 +26,47 @@ onLoop(({ delta, elapsed }) => {
       window-size>
     <!-- Your scene here -->
       <TresPerspectiveCamera 
-        :position="[3, 3, 3]"
-        :look-at="[0, 0, 0]"/>
+        :position="[0, 0, 20]"
+        :look-at="[5, 0, 0]"/>
 
       <TresMesh
         ref="boxRef"
-        :scale="1">
+        :scale="1"
+        :castShadow="true"
+        :recieveShadow="true">
 
-        <TresTorusGeometry :args="[1, 0.5, 16, 32]" />
-        <TresMeshBasicMaterial color="orange" />
+        <!-- <TresTorusGeometry :args="[1, 0.5, 16, 32]" /> -->
+        <TresBoxGeometry :args="[1, 1, 1, 4, 4, 4]" />
+        <!-- <TresMeshBasicMaterial color="orange" /> -->
+        <!-- <TresMeshNormalMaterial color="orange" /> -->
+        <!-- <TresMeshToonMaterial color="#049ef4" /> -->
+        <TresMeshStandardMaterial color="#049ef4" />
       </TresMesh>
-      <TresAmbientLight :intensity="1" />
+
+      <TresMesh 
+        :position="[5, 0, 0]"
+        :castShadow="true"
+        :recieveShadow="true">
+        <TresSphereGeometry :args="[2, 32, 16, 0, 6.283185307179586, 0, 3.141592653589793]" />
+        <!-- <TresMeshBasicMaterial color="orange" wireframe /> -->
+        <TresMeshStandardMaterial color="orange" />
+      </TresMesh>
+
+      <TresMesh 
+        :position="[0, 0, -2.5]"
+        :recieveShadow="true"
+        :castShadow="true">
+        <TresPlaneGeometry :args="[100, 100, 48, 48]" />
+        <TresMeshStandardMaterial color="#ffffff" />
+      </TresMesh>
+
+
+      <!-- <TresAmbientLight :intensity="1" /> -->
+      <!-- <TresDirectionalLight color="#FFFFFF" :intensity="1" :shadow="true" :cast-shadow="true" :position="[0, 0, 10]"/> -->
+      <TresDirectionalLight ref="directionalLightRef" :args="['white', 1]" :position="[0, 0, 10]"/>
+      <TresDirectionalLightHelper v-if="directionalLightRef" :args="[directionalLightRef, 10]"/>
+
+      <TresSpotLight color="#FFFFFF" :intensity="20" :distance="20" :decay="10" :position="[0, 20, 20]" :castShadow="true"/>
 
       <OrbitControls />
     </TresCanvas>
