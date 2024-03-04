@@ -1,5 +1,5 @@
 <script setup>
-import { OrbitControls, } from '@tresjs/cientos'
+import { OrbitControls, vLightHelper } from '@tresjs/cientos'
 
 import { TresCanvas } from '@tresjs/core'
 // import { ref } from 'vue'
@@ -14,8 +14,6 @@ onLoop(({ delta, elapsed }) => {
     boxRef.value.rotation.z = elapsed * 0.1
   }
 })
-
-const directionalLightRef = ref(null);
 </script>
 
 <template>
@@ -63,8 +61,7 @@ const directionalLightRef = ref(null);
 
       <!-- <TresAmbientLight :intensity="1" /> -->
       <!-- <TresDirectionalLight color="#FFFFFF" :intensity="1" :shadow="true" :cast-shadow="true" :position="[0, 0, 10]"/> -->
-      <TresDirectionalLight ref="directionalLightRef" :args="['white', 1]" :position="[0, 0, 10]"/>
-      <TresDirectionalLightHelper v-if="directionalLightRef" :args="[directionalLightRef, 10]"/>
+      <TresDirectionalLight ref="directionalLightRef" :args="['white', 1]" :position="[0, 0, 10]" v-light-helper/>
 
       <TresSpotLight color="#FFFFFF" :intensity="20" :distance="20" :decay="10" :position="[0, 20, 20]" :castShadow="true"/>
 
